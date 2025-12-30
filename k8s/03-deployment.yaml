@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devsu-api
+  namespace: devsu
+  labels:
+    app: devsu-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: devsu-api
+  template:
+    metadata:
+      labels:
+        app: devsu-api
+    spec:
+      containers:
+        - name: api
+          image: IMAGE_PLACEHOLDER
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: devsu-api-config
+            - secretRef:
+                name: devsu-api-secrets
+          readinessProbe:
+            httpGet:
+              path: /devsu/api/users/healthz
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /devsu/api/users/healthz
+              port: 8000
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"

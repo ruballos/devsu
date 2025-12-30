@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: devsu-api-ingress
+  namespace: devsu
+spec:
+  ingressClassName: gce
+  rules:
+    - http:
+        paths:
+          - path: /devsu/*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: devsu-api-svc
+                port:
+                  number: 80

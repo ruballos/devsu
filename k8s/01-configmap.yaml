@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: devsu-api-config
+  namespace: devsu
+data:
+  PORT: "8000"
+  NODE_ENV: "production"

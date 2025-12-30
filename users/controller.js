@@ -1,5 +1,14 @@
 import User from './model.js'
 
+export const healthz = async (req, res) => {
+  try {
+    return res.status(200).json({ status: 'ok' })
+  } catch (error) {
+    console.error('healthz() -> unknown', { error })
+    return res.status(500).json({ status: 'error' })
+  }
+}
+
 export const listUsers = async (req, res) => {
     try {
         const users = await User.findAll()
