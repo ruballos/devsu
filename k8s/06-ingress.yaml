@@ -8,8 +8,8 @@ spec:
   rules:
     - http:
         paths:
-          - path: /devsu/*
-            pathType: ImplementationSpecific
+          - path: /devsu
+            pathType: Prefix
             backend:
               service:
                 name: devsu-api-svc
