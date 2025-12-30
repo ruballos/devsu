@@ -2,10 +2,11 @@ name: CI-CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-  build-test:
+  static-code-analysis:
+    name: Static Code Analysis (Lint)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,15 +20,45 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      # Static Code Analysis
-      - name: Lint (ESLint)
+      - name: Run ESLint
         run: npm run lint
 
-      # Unit Tests + Code Coverage
-      - name: Unit tests + Coverage
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Run tests
+        run: npm test -- --runInBand
+
+  code-coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Run coverage
         run: npm run test:coverage -- --runInBand
 
-      # Guarda el reporte de coverage como artifact (opcional pero útil)
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
@@ -35,8 +66,12 @@ jobs:
           path: coverage/
 
   docker-push-deploy:
+    name: Docker Push + Deploy to GKE
     runs-on: ubuntu-latest
-    needs: build-test
+    needs:
+      - static-code-analysis
+      - unit-tests
+      - code-coverage
 
     permissions:
       contents: read
@@ -95,7 +130,6 @@ jobs:
       - name: Deploy to GKE (apply deployment/service/hpa/ingress)
         run: |
           sed -e "s|IMAGE_PLACEHOLDER|${IMAGE_URI}|g" k8s/03-deployment.yaml | kubectl apply -f -
-
           kubectl apply -f k8s/04-service.yaml
           kubectl apply -f k8s/05-hpa.yaml
           kubectl apply -f k8s/06-ingress.yaml
