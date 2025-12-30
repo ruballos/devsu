@@ -9,7 +9,6 @@ app.use(express.json())
 app.get('/healthz', (req, res) => res.status(200).send('ok'))
 app.use('/devsu/api/users', usersRouter)
 
-
 //evitamos sync/listen en tests
 let server = null
 if (process.env.NODE_ENV !== 'test') {
