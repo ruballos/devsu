@@ -19,8 +19,20 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Unit tests
-        run: npm test -- --runInBand
+      # Static Code Analysis
+      - name: Lint (ESLint)
+        run: npm run lint
+
+      # Unit Tests + Code Coverage
+      - name: Unit tests + Coverage
+        run: npm run test:coverage -- --runInBand
+
+      # Guarda el reporte de coverage como artifact (opcional pero útil)
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
 
   docker-push-deploy:
     runs-on: ubuntu-latest
