@@ -32,7 +32,7 @@ describe('User', () => {
     })
 
     afterAll(async () => {
-        server.close()
+        if (server) server.close()
     })
 
     test('Get users', async () => {
