@@ -37,7 +37,7 @@ describe('User', () => {
 
     test('Get users', async () => {
         jest.spyOn(User, 'findAll').mockResolvedValue([data])
-        const response = await request(app).get('/api/users')
+        const response = await request(app).get('/devsu/api/users')
 
         expect(response.status).toBe(200)
         expect(response.body).toEqual([data])
@@ -45,7 +45,7 @@ describe('User', () => {
 
     test('Get user', async () => {
         jest.spyOn(User, 'findByPk').mockResolvedValue({...data, "id": 1})
-        const response = await request(app).get('/api/users/1')
+        const response = await request(app).get('/devsu/api/users/1')
 
         expect(response.status).toBe(200)
         expect(response.body).toEqual({...data, "id": 1})
@@ -54,7 +54,7 @@ describe('User', () => {
     test('Create user', async () => {
         jest.spyOn(User, 'findOne').mockResolvedValue(null)
         jest.spyOn(User, 'create').mockResolvedValue({...data, "id": 1})
-        const response = await request(app).post('/api/users').send(data)
+        const response = await request(app).post('/devsu/api/users').send(data)
 
         expect(response.status).toBe(201)
         expect(response.body).toEqual({...data, "id": 1})
