@@ -23,6 +23,9 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
+      - name: Dependency audit (fail on high+)
+        run: npm audit --audit-level=high
+
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
