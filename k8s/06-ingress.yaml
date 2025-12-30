@@ -3,15 +3,16 @@ kind: Ingress
 metadata:
   name: devsu-api-ingress
   namespace: devsu
+  annotations:
+    kubernetes.io/ingress.class: "gce"
 spec:
-  ingressClassName: gce
   rules:
-    - http:
-        paths:
-          - path: /devsu
-            pathType: Prefix
-            backend:
-              service:
-                name: devsu-api-svc
-                port:
-                  number: 80
+  - http:
+      paths:
+      - path: /devsu
+        pathType: Prefix
+        backend:
+          service:
+            name: devsu-api-svc
+            port:
+              number: 80
